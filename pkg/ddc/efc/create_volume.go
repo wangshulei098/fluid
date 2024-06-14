@@ -103,8 +103,18 @@ func (e *EFCEngine) createPersistentVolumeForRuntime(runtime base.RuntimeInfoInt
 			Spec: corev1.PersistentVolumeSpec{
 				AccessModes: accessModes,
 				Capacity: corev1.ResourceList{
-					corev1.ResourceName(corev1.ResourceStorage): resource.MustParse("100Pi"),
+					corev1.ResourceName(corev1.ResourceStorage): func() resource.Quantity {
+						dataset, err := utils.GetDataset(e.Client, runtime.GetName(), runtime.GetNamespace())
+						if err != nil {
+							return resource.MustParse("100Pi")
+						}
+						if dataset.Spec.StorageSize != nil {
+							return *dataset.Spec.StorageSize
+						}
+						return resource.MustParse("100Pi")
+					}(),
 				},
+
 				StorageClassName: common.FluidStorageClass,
 				PersistentVolumeSource: corev1.PersistentVolumeSource{
 					CSI: &corev1.CSIPersistentVolumeSource{

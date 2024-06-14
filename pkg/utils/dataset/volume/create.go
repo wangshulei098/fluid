@@ -65,7 +65,16 @@ func CreatePersistentVolumeForRuntime(client client.Client,
 			Spec: corev1.PersistentVolumeSpec{
 				AccessModes: accessModes,
 				Capacity: corev1.ResourceList{
-					corev1.ResourceName(corev1.ResourceStorage): resource.MustParse("100Pi"),
+					corev1.ResourceName(corev1.ResourceStorage): func() resource.Quantity {
+						dataset, err := utils.GetDataset(client, runtime.GetName(), runtime.GetNamespace())
+						if err != nil {
+							return resource.MustParse("100Pi")
+						}
+						if dataset.Spec.StorageSize != nil {
+							return *dataset.Spec.StorageSize
+						}
+						return resource.MustParse("100Pi")
+					}(),
 				},
 				StorageClassName: common.FluidStorageClass,
 				PersistentVolumeSource: corev1.PersistentVolumeSource{
@@ -222,7 +231,16 @@ func CreatePersistentVolumeClaimForRuntime(client client.Client,
 				AccessModes:      accessModes,
 				Resources: corev1.ResourceRequirements{
 					Requests: corev1.ResourceList{
-						corev1.ResourceName(corev1.ResourceStorage): resource.MustParse("100Pi"),
+						corev1.ResourceName(corev1.ResourceStorage): func() resource.Quantity {
+							dataset, err := utils.GetDataset(client, runtime.GetName(), runtime.GetNamespace())
+							if err != nil {
+								return resource.MustParse("100Pi")
+							}
+							if dataset.Spec.StorageSize != nil {
+								return *dataset.Spec.StorageSize
+							}
+							return resource.MustParse("100Pi")
+						}(),
 					},
 				},
 			},

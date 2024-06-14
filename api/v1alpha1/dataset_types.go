@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	// "github.com/rook/rook/pkg/apis/rook.io/v1"
@@ -165,6 +166,10 @@ type DatasetSpec struct {
 	// SharedEncryptOptions is the encryptOption to all mount
 	// +optional
 	SharedEncryptOptions []EncryptOption `json:"sharedEncryptOptions,omitempty"`
+
+	// StorageSize is the storage size of pvc and pv
+	// +optional
+	StorageSize *resource.Quantity `json:"storageSize,omitempty"`
 }
 
 // Runtime describes a runtime to be used to support dataset

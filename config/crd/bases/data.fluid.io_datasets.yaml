@@ -332,6 +332,13 @@ spec:
                   type: string
                 description: SharedOptions is the options to all mount
                 type: object
+              storageSize:
+                anyOf:
+                - type: integer
+                - type: string
+                description: StorageSize is the storage size of pvc and pv
+                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                x-kubernetes-int-or-string: true
               tolerations:
                 description: If specified, the pod's tolerations.
                 items:

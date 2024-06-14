@@ -3,7 +3,7 @@ CRD_OPTIONS ?= "crd"
 
 # The Image URL to use in docker build and push
 # IMG_REPO ?= registry.aliyuncs.com/fluid
-IMG_REPO ?= fluidcloudnative
+IMG_REPO ?= localhost:5000
 DATASET_CONTROLLER_IMG ?= ${IMG_REPO}/dataset-controller
 APPLICATION_CONTROLLER_IMG ?= ${IMG_REPO}/application-controller
 ALLUXIORUNTIME_CONTROLLER_IMG ?= ${IMG_REPO}/alluxioruntime-controller
@@ -18,7 +18,7 @@ LOADER_IMG ?= ${IMG_REPO}/fluid-dataloader
 INIT_USERS_IMG ?= ${IMG_REPO}/init-users
 WEBHOOK_IMG ?= ${IMG_REPO}/fluid-webhook
 CRD_UPGRADER_IMG?= ${IMG_REPO}/fluid-crd-upgrader
-GO_MODULE ?= off
+GO_MODULE ?= on
 GC_FLAGS ?= -gcflags="all=-N -l"
 ARCH ?= amd64
 
@@ -198,7 +198,7 @@ docker-build-application-controller:
 	docker build --no-cache --build-arg TARGETARCH=${ARCH} . -f docker/Dockerfile.application -t ${APPLICATION_CONTROLLER_IMG}:${GIT_VERSION}
 
 docker-build-alluxioruntime-controller:
-	docker build --no-cache --build-arg TARGETARCH=${ARCH} . -f docker/Dockerfile.alluxioruntime -t ${ALLUXIORUNTIME_CONTROLLER_IMG}:${GIT_VERSION}
+	docker build --network=host --no-cache --build-arg TARGETARCH=${ARCH} . -f docker/Dockerfile.alluxioruntime -t ${ALLUXIORUNTIME_CONTROLLER_IMG}:${GIT_VERSION}
 
 docker-build-jindoruntime-controller:
 	docker build --no-cache --build-arg TARGETARCH=${ARCH} . -f docker/Dockerfile.jindoruntime -t ${JINDORUNTIME_CONTROLLER_IMG}:${GIT_VERSION}
